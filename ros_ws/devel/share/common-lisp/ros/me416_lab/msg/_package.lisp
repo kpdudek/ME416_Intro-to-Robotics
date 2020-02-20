@@ -1,0 +1,1 @@
+/home/kpdudek/ros_ws/devel/.private/me416_lab/share/common-lisp/ros/me416_lab/msg/_package.lisp

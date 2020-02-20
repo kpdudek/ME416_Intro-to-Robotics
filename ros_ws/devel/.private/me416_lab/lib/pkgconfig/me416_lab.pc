@@ -1,0 +1,8 @@
+prefix=/home/kpdudek/ros_ws/devel/.private/me416_lab
+
+Name: me416_lab
+Description: Description of me416_lab
+Version: 0.0.0
+Cflags: -I/home/kpdudek/ros_ws/devel/.private/me416_lab/include
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,1 @@
+/home/kpdudek/ros_ws/devel/.private/me416_lab/lib/python2.7/dist-packages/me416_lab/msg/__init__.py

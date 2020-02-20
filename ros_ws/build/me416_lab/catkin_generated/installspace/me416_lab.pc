@@ -1,0 +1,8 @@
+prefix=/home/kpdudek/ros_ws/install
+
+Name: me416_lab
+Description: Description of me416_lab
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 
