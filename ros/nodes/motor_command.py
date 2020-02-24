@@ -3,14 +3,14 @@
 
 import rospy
 from std_msgs.msg import String
-from geometry_msgs import Twist
+from geometry_msgs.msg import Twist
 from me416_lab.msg import MotorSpeedsStamped
 import motor_command_model as mcm
 
 class MotorCommand(object):
     def __init__(self):
         self.pub = rospy.Publisher('motor_speeds', MotorSpeedsStamped, queue_size=10)
-        self.sub = rospy.Subscriber('robot_twist', Twist, callback=twist_callback,queue_size=10)
+        self.sub = rospy.Subscriber('robot_twist', Twist, callback=self.twist_callback,queue_size=10)
         self.motor_cmd = MotorSpeedsStamped()
 
     def twist_callback(self,data):
