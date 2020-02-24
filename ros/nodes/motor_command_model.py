@@ -22,3 +22,16 @@ def system_field(z, u):
 def euler_step(z, u, stepSize):
     """Integrates the dynamical model for one time step using Euler's method"""
     return zp
+
+def twist_to_speeds(lin,ang):
+    """This function is passed the desired robot linear and angular speeds and returns the individual motor commands"""
+    left = 1.0 * lin
+    right = 1.0 * lin
+
+    if ang > 0:
+        left = left * (1-ang)
+    elif ang < 0:
+        right = -1* right * (1+ang)
+
+
+    return left,right
