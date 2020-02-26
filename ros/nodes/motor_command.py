@@ -25,7 +25,6 @@ class MotorCommand(object):
         self.R_motor.set_speed(right)
         self.motor_cmd.header.stamp = rospy.Time.now()
         
-    def send(self):
         self.pub.publish(self.motor_cmd)
 
 def main():
@@ -37,11 +36,8 @@ def main():
     rate = rospy.Rate(30)
 
     motor_command = MotorCommand()
-    while not rospy.is_shutdown():
-        motor_command.send()
         
-        #Wait until it is done
-        rate.sleep()
+    rospy.spin()
 
 
 if __name__ == '__main__':
