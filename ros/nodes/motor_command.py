@@ -13,9 +13,9 @@ class MotorCommand(object):
         self.pub = rospy.Publisher('motor_speeds', MotorSpeedsStamped, queue_size=10)
         self.sub = rospy.Subscriber('robot_twist', Twist, callback=self.twist_callback,queue_size=10)
         self.motor_cmd = MotorSpeedsStamped()
-        self.speed_offset = 0.95
-        self.L_motor = mu.MotorSpeedLeft(self.speed_offset)
-        self.R_motor = mu.MotorSpeedRight()
+        self.speed_offset = 0.86
+        self.L_motor = mu.MotorSpeedLeft()
+        self.R_motor = mu.MotorSpeedRight(self.speed_offset)
 
     def twist_callback(self,data):
         left,right = mcm.twist_to_speeds(data.linear.x,data.angular.z)
