@@ -25,21 +25,34 @@ def euler_step(z, u, stepSize):
 
 def twist_to_speeds(lin,ang):
     """This function is passed the desired robot linear and angular speeds and returns the individual motor commands"""
-    if abs(lin) > 0 and abs(ang) > 0:
+    anglular_offset = 1.1
+
+    if lin > 0.0 and abs(ang) > 0.0:
         left = 1.0 * lin
         right = 1.0 * lin
 
-        if ang > 0:
-            left = left * (1-ang)
-        elif ang < 0:
-            right = right * (1+ang)
-    elif abs(lin) < 0.05 and abs(ang) > 0:
-        if ang > 0:
-            left = -1+ang
-            right = 1-ang
-        elif ang < 0:
-            right = -1-ang
-            left = 1+ang
+        if ang > 0.0:
+            left = left * (anglular_offset-ang)
+        elif ang < 0.0:
+            right = right * (anglular_offset+ang)
+    
+    elif lin < 0.0 and abs(ang) > 0.0:
+        left = 1.0 * lin
+        right = 1.0 * lin
+
+        if ang > 0.0:
+            right = right * (anglular_offset-ang)
+        elif ang < 0.0:
+            left = left * (anglular_offset+ang)
+
+    elif abs(lin) == 0.0 and abs(ang) > 0.0:
+        if ang > 0.0:
+            left = -anglular_offset+ang
+            right = anglular_offset-ang
+        elif ang < 0.0:
+            right = -anglular_offset-ang
+            left = anglular_offset+ang
+
     else:
         left = 1.0 * lin
         right = 1.0 * lin
