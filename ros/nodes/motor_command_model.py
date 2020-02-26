@@ -27,35 +27,42 @@ def twist_to_speeds(lin,ang):
     """This function is passed the desired robot linear and angular speeds and returns the individual motor commands"""
     anglular_offset = 1.1
 
+    # Move forwards and arc
     if lin > 0.0 and abs(ang) > 0.0:
         left = 1.0 * lin
         right = 1.0 * lin
 
+        # Arc left
         if ang > 0.0:
             left = left * (anglular_offset-ang)
+        # Arc right
         elif ang < 0.0:
             right = right * (anglular_offset+ang)
     
+    # Move backwards and arc
     elif lin < 0.0 and abs(ang) > 0.0:
         left = 1.0 * lin
         right = 1.0 * lin
 
+        # Arc left
         if ang > 0.0:
             right = right * (anglular_offset-ang)
+        # Arc right
         elif ang < 0.0:
             left = left * (anglular_offset+ang)
 
+    # Pivot in place
     elif abs(lin) == 0.0 and abs(ang) > 0.0:
         if ang > 0.0:
-            left = -anglular_offset+ang
-            right = anglular_offset-ang
+            left = -1*ang
+            right = ang
         elif ang < 0.0:
-            right = -anglular_offset-ang
-            left = anglular_offset+ang
+            right = 1*ang
+            left = -1*ang
 
+    # Move robot straight
     else:
-        left = 1.0 * lin
-        right = 1.0 * lin
-
+        left = lin
+        right = lin
 
     return left,right
