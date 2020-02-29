@@ -66,3 +66,48 @@ def twist_to_speeds(lin,ang):
         right = lin
 
     return left,right
+
+class KeysToVelocities(object):
+    def __init__(self):
+        self.speed_linear = 0.0
+        self.speed_angular = 0.0
+        self.SPEED_DELTA = 0.2
+        self.action = ''
+
+    def update_speeds(self,key):
+        if key == 'w' or key == 'W':
+            self.speed_linear += self.SPEED_DELTA
+            self.action = 'Increased Linear Speed by %f'%(self.SPEED_DELTA)
+        elif key == 's' or key == 'S':
+            self.speed_angular -= self.SPEED_DELTA
+            self.action = 'Decreased Linear Speed by %f'%(self.SPEED_DELTA)
+        elif key == 'a' or key == 'A':
+            self.speed_angular -= self.SPEED_DELTA
+            self.action = 'Increased Angular Speed by %f'%(self.SPEED_DELTA)
+        elif key == 'd' or key == 'D':
+            self.speed_angular += self.SPEED_DELTA
+            self.action = 'Decreased Angular Speed by %f'%(self.SPEED_DELTA)
+        elif key == 'z' or key == 'Z':
+            self.speed_linear = 0.0
+            self.action = 'Zeroed Linear Speed'
+        elif key == 'c' or key == 'C':
+            self.speed_angular = 0.0
+            self.action = 'Zeroed Angular Speed'
+        elif key == 'x' or key == 'X':
+            self.speed_angular = 0.0
+            self.speed_linear = 0.0
+            self.action = 'Zeroed All Speeds'
+        else:
+            self.action = 'Invalid Key Press'
+
+        if self.speed_angular > 1.0:
+            self.speed_angular = 1.0
+        elif self.speed_angular < -1.0:
+            self.speed_angular = -1.0
+
+        if self.speed_linear > 1.0:
+            self.speed_linear = 1.0
+        elif self.speed_linear < -1.0:
+            self.speed_linear = -1.0            
+        
+        return self.speed_linear, self.speed_angular
