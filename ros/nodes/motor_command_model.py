@@ -25,10 +25,11 @@ def euler_step(z, u, stepSize):
 
 def twist_to_speeds(lin,ang):
     """This function is passed the desired robot linear and angular speeds and returns the individual motor commands"""
-    anglular_offset = 1.1
+    anglular_offset = 1.01
+    float_tol = 0.01
 
     # Move forwards and arc
-    if lin > 0.0 and abs(ang) > 0.0:
+    if lin > float_tol and abs(ang) > float_tol:
         left = 1.0 * lin
         right = 1.0 * lin
 
@@ -40,7 +41,7 @@ def twist_to_speeds(lin,ang):
             right = right * (anglular_offset+ang)
     
     # Move backwards and arc
-    elif lin < 0.0 and abs(ang) > 0.0:
+    elif lin < -float_tol and abs(ang) > float_tol:
         left = 1.0 * lin
         right = 1.0 * lin
 
@@ -52,7 +53,7 @@ def twist_to_speeds(lin,ang):
             left = left * (anglular_offset+ang)
 
     # Pivot in place
-    elif abs(lin) == 0.0 and abs(ang) > 0.0:
+    elif abs(lin) <= float_tol and abs(ang) > float_tol:
         if ang > 0.0:
             left = -1*ang
             right = ang
@@ -79,13 +80,13 @@ class KeysToVelocities(object):
             self.speed_linear += self.SPEED_DELTA
             self.action = 'Increased Linear Speed by %f'%(self.SPEED_DELTA)
         elif key == 's' or key == 'S':
-            self.speed_angular -= self.SPEED_DELTA
+            self.speed_linear -= self.SPEED_DELTA
             self.action = 'Decreased Linear Speed by %f'%(self.SPEED_DELTA)
         elif key == 'a' or key == 'A':
-            self.speed_angular -= self.SPEED_DELTA
+            self.speed_angular += self.SPEED_DELTA
             self.action = 'Increased Angular Speed by %f'%(self.SPEED_DELTA)
         elif key == 'd' or key == 'D':
-            self.speed_angular += self.SPEED_DELTA
+            self.speed_angular -= self.SPEED_DELTA
             self.action = 'Decreased Angular Speed by %f'%(self.SPEED_DELTA)
         elif key == 'z' or key == 'Z':
             self.speed_linear = 0.0

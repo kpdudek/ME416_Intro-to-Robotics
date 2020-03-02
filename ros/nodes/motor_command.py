@@ -18,7 +18,7 @@ class MotorCommand(object):
         self.motor_cmd = MotorSpeedsStamped()
 
         # Set up the motor objects with an offset for the right motor
-        self.speed_offset = 0.86
+        self.speed_offset = 0.84
         self.L_motor = mu.MotorSpeedLeft()
         self.R_motor = mu.MotorSpeedRight(self.speed_offset)
 
