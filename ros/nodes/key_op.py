@@ -27,13 +27,14 @@ def main():
     getch = mu._Getch()
 
     key_to_speed = mcm.KeysToVelocities()
-
     cmd_vel = Twist()
-
     print_usage()
+    
     #Main ROS loop
     while not rospy.is_shutdown():
         key = getch()
+
+        # Check if exit is commanded
         if key == 'q' or key == 'Q':
             rospy.loginfo("Shutdown initiated")
             rospy.signal_shutdown(

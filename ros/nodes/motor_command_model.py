@@ -101,6 +101,7 @@ class KeysToVelocities(object):
         else:
             self.action = 'Invalid Key Press'
 
+        # Ensure published value is in range [-1,1]
         if self.speed_angular > 1.0:
             self.speed_angular = 1.0
         elif self.speed_angular < -1.0:

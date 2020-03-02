@@ -15,23 +15,23 @@ def main():
     pub = rospy.Publisher('robot_twist', Twist, queue_size=10)
     cmd_vel = Twist()
 
-    list_idx = 0
     filename = '/home/ubuntu/ros_ws/src/me416_lab/data/scripted_op.csv'
     twist_data = mu.read_two_columns_csv(filename)
 
+    list_idx = 0
     rate = rospy.Rate(1.0)
     #Main ROS loop
     while not rospy.is_shutdown():
-        if list_idx < len(twist_data):
-            data = twist_data[list_idx]
-            cmd_vel.linear.x = data[0]
-            cmd_vel.angular.z = data[1]
+        data = twist_data[list_idx]
+        cmd_vel.linear.x = data[0]
+        cmd_vel.angular.z = data[1]
 
-            pub.publish(cmd_vel)
-            list_idx += 1
-
-            if list_idx == (len(twist_data)):
-                list_idx = 0
+        pub.publish(cmd_vel)
+        
+        list_idx += 1
+        # If at end of list, restart at beginning
+        if list_idx == (len(twist_data)):
+            list_idx = 0
         
         rate.sleep()
 
