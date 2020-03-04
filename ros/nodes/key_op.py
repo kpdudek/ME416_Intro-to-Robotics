@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Simple script that waits for the key 'q' and then terminates"""
+"""Script that reads keyboard input and updates motor speeds accordingly"""
 
 import rospy
 import me416_utilities as mu
@@ -29,6 +29,8 @@ def main():
     key_to_speed = mcm.KeysToVelocities()
     cmd_vel = Twist()
     print_usage()
+    print('Linear Speed: %f | Angular Speed: %f'%(key_to_speed.speed_linear,key_to_speed.speed_angular))
+    print('')
     
     #Main ROS loop
     while not rospy.is_shutdown():
