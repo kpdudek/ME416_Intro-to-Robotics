@@ -1,5 +1,6 @@
 """Functions for modeling ROSBot"""
 
+import rospy
 import numpy as np
 from math import cos, sin
 
@@ -9,8 +10,44 @@ def model_parameters():
     d = 0.5
     return k, d
 
+def closed_form_parameters(z_zero,u):
+    k,d = model_parameters()
+    sl = u[0]
+    sr = u[1]
+
+    r = (d*(sl+sr))/(sl-sr)
+    omega = (k/2*d) * (sr-sl)
+    c_x = z_zero[0] - r*sin(z_zero[2]) 
+    c_y = z_zero[1] - r*cos(z_zero[2]) 
+    c_theta = z_zero[2]
+
+    return r,omega,c_x,c_y,c_theta
+
+def closed_form_step(z,u,T):
+    if T == None:
+        return z
+    
+    if abs(u[0]-u[1]) < np.pow(10,-3):
+        r,omega,c_x,c_y,c_theta = closed_form_parameters(z,u)
+
+        x = r * np.sin(omega*T) + cx
+        y = -r * np.cos(omega*T) + cy
+        theta = omega*T + ct
+    else:
+        k,d = model_parameters()
+        sl = u[0]
+        sr = u[1]
+        x = (k/2.0)*cos(z[2])*(sl+sr)*T + z[0]
+        y = (k/2.0)*sin(z[2])*(sl+sr)*T + z[1]
+        theta = ct = z[2]
+
+    zp = np.array([[x],[y],[theta]])
+    return zp
+
 def system_matrix(theta):
     """Returns a numpy array with the A(theta) matrix for a differential drive robot"""
+    k,d = model_parameters()
+    A = (k/2.0) * np.array([[cos(theta), cos(theta)],[sin(theta), sin(theta)],[-1.0/d, 1.0/d]])
     return A
 
 
@@ -21,50 +58,21 @@ def system_field(z, u):
 
 def euler_step(z, u, stepSize):
     """Integrates the dynamical model for one time step using Euler's method"""
+    A = system_matrix(z[2])
+    zp = z + stepSize*A.dot(u)
     return zp
 
 def twist_to_speeds(lin,ang):
     """This function is passed the desired robot linear and angular speeds and returns the individual motor commands"""
-    anglular_offset = 1.01
-    float_tol = 0.01
+    k,d = model_parameters()
 
-    # Move forwards and arc
-    if lin > float_tol and abs(ang) > float_tol:
-        left = 1.0 * lin
-        right = 1.0 * lin
+    left = (lin - d*ang) / k 
+    right = (lin + d*ang) / k
 
-        # Arc left
-        if ang > 0.0:
-            left = left * (anglular_offset-ang)
-        # Arc right
-        elif ang < 0.0:
-            right = right * (anglular_offset+ang)
-    
-    # Move backwards and arc
-    elif lin < -float_tol and abs(ang) > float_tol:
-        left = 1.0 * lin
-        right = 1.0 * lin
-
-        # Arc left
-        if ang > 0.0:
-            right = right * (anglular_offset-ang)
-        # Arc right
-        elif ang < 0.0:
-            left = left * (anglular_offset+ang)
-
-    # Pivot in place
-    elif abs(lin) <= float_tol and abs(ang) > float_tol:
-        if ang > 0.0:
-            left = -1*ang
-            right = ang
-        elif ang < 0.0:
-            right = 1*ang
-            left = -1*ang
-
-    # Move robot straight
-    else:
-        left = lin
-        right = lin
+    if abs(left) > 1.0:
+        left = np.sign(left) * 1.0
+    if abs(right) > 1.0:
+        right = np.sign(right) * 1.0
 
     return left,right
 
@@ -113,3 +121,20 @@ class KeysToVelocities(object):
             self.speed_linear = -1.0            
         
         return self.speed_linear, self.speed_angular
+
+class StampedMsgRegister(object):
+    def __init__(self):
+        self.msg_previous = None
+
+    def replace_and_compute_delay(self,msg):
+        if self.msg_previous == None:
+            msg_previous = None
+            self.msg_previous = msg
+            time_delay = None
+        else:
+            msg_previous = self.msg_previous
+            self.msg_previous = msg
+            time_delay = msg.header.stamp.to_sec() - msg_previous.header.stamp.to_sec()
+
+        return time_delay, msg_previous
+
