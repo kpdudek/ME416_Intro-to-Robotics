@@ -3,11 +3,13 @@
 import rospy
 import numpy as np
 from math import cos, sin
+import math
 
 def model_parameters():
     """Returns two constant model parameters"""
-    k = 1.0
+    k = 2.0
     d = 0.5
+
     return k, d
 
 def closed_form_parameters(z_zero,u):
@@ -27,12 +29,12 @@ def closed_form_step(z,u,T):
     if T == None:
         return z
     
-    if abs(u[0]-u[1]) < np.pow(10,-3):
+    if abs(float(u[0]-u[1])) > float(math.pow(10,-3)):
         r,omega,c_x,c_y,c_theta = closed_form_parameters(z,u)
 
-        x = r * np.sin(omega*T) + cx
-        y = -r * np.cos(omega*T) + cy
-        theta = omega*T + ct
+        x = r * np.sin(omega*T + c_theta) + c_x
+        y = -r * np.cos(omega*T + c_theta) + c_y
+        theta = omega*T + c_theta
     else:
         k,d = model_parameters()
         sl = u[0]

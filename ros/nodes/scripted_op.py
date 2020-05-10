@@ -15,7 +15,7 @@ def main():
     pub = rospy.Publisher('robot_twist', Twist, queue_size=10)
     cmd_vel = Twist()
 
-    filename = '~/ros_ws/src/me416_lab/data/scripted_op.csv'
+    filename = '/home/kurt/catkin_ws/src/rosme416/data/square_turn.csv'
     twist_data = mu.read_two_columns_csv(filename)
 
     list_idx = 0

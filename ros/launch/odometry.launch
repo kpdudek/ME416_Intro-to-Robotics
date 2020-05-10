@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<?ignore
+	Launches the nodes responsible for converting motor commands into an estimated pose
+?>
+
+<launch>
+  <!-- <include file="$(find me416_lab)/launch/turtlesim_odometry.launch"/> -->
+  <node pkg="me416_lab" name="motor_command" type="motor_command.py"/>
+  <node pkg="me416_lab" name="closed_form_odom" type="odometry_wheels_arcs.py" output="screen"/>
+  <node pkg="me416_lab" name="euler_odom" type="odometry_encoders_euler.py" output="screen"/>
+</launch>
